@@ -14,7 +14,7 @@ int main() {
 
 	while(cin >> N){
 		/* N is not in range [0,50] */
-		if( (N>50) || (N<0) ) break;
+		if( (N>50) || (N<=0) ) break;
 
 		/* N is in range [0,50] */
 		// create array to put every digit

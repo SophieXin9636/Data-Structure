@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
 
+/* Knight's tour problem */
+
 const int direction = 8; // eight direction of knight's movement
 const int x_move[direction] = {-2, -1, 1, 2, 2, 1, -1, -2};
 const int y_move[direction] = {1, 2, 2, 1, -1, -2, -2, -1};
@@ -46,39 +48,38 @@ int Stack::Pop(){
 
 int main() {
 	
-	for(int size=1; size<=5; size++){
+	for(int size=1; size<=6; size++){
+		cout << "n = " << size << endl;
 		if(size == 1){
 			cout << "1" << endl;
 			continue;
 		}
 		else if(size == 2 || size == 3 || size == 4){
-			cout << "no solution" << endl;
+			cout <<"no solution" << endl;
 			continue;
 		}
 		Stack x_pos(size*size); // Create a stack that record visited x position
 		Stack y_pos(size*size); // Create a stack that record visited y position
 		Stack move_direction(size*size); // Create a stack that record direction
-		int chessboard[size][size] = {0};
+		int chessboard[6][6] = {0};
 		chessboard[0][0] = 1; // starting location
 		
 		// the location has not been visited yet on the chessboard
-		int visit[size][size] = {0}; 
-		visit[0][0] = 1; // starting location
+		bool visit[6][6] = {false}; 
+		visit[0][0] = true; // starting location
 		
 		// knight move until all position had visited (all element is not equal to 0)
 		// method : if check_visited == size*size , then stop visiting.
 		int check_visited = 1;
 		int knightX = 0, knightY = 0; // array index of knight location
-		int i; // counter
-		while(check_visited != 18){
+		int i = 0; // counter
+		while(check_visited != size*size){
 			// push the position (x,y) into stack
-			x_pos.Push(knightX);
-			y_pos.Push(knightY);
-			cout << knightX <<" "<< knightY <<" ";
-			
+			int old_pos_x = knightX;
+			int old_pos_y = knightY;
 			// try 8 directions to find possible path and move
-			for(i=0; i < direction; i++){
-				
+			for(; i < direction; i++){
+			
 				// move
 				knightX += x_move[i];
 				knightY += y_move[i];
@@ -89,18 +90,37 @@ int main() {
 					knightX -= x_move[i];
 					knightY -= y_move[i];
 				}
-				// record movign information and put in stack
+				// knight back
 				else if(chessboard[knightX][knightY] != 0){
 					knightX -= x_move[i];
 					knightY -= y_move[i];
 				}
+				// record moving information and put in stack
 				else{ // chessboard[knightX][knightY] == 0
 					chessboard[knightX][knightY] = ++check_visited;
+					visit[knightX][knightX] = true;
+					x_pos.Push(old_pos_x);
+					y_pos.Push(old_pos_y);
 					move_direction.Push(i);
 					break;
 				}
 			}
-			cout << i <<" "<< check_visited-1 << endl;
+
+			//cout << old_pos_x <<" "<< old_pos_y <<" ";
+			//cout << i <<" "<< check_visited-1 << endl;
+			
+			// check all path and cannot move
+			if(i == 8){
+				chessboard[knightX][knightY] = 0;
+				--check_visited;
+				knightX = x_pos.Pop();
+				knightY = y_pos.Pop();
+				i = move_direction.Pop()+1;
+				//cout << "pop : " << knightX <<" "<< knightY <<" "<<i<< endl;
+			}
+			else{
+				i = 0;
+			}
 		}
 		
 		// print result of step labels of the chessboard

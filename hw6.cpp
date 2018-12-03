@@ -210,11 +210,16 @@ private:
 
 int main() {
 	int data;
-	BSTree inputBST;
-	while (cin >> data) {
-		if (data == -1) break;
-		inputBST.insertNode(data);
+	char c;
+	while(true){
+		if(cin.eof() == true) break;
+		BSTree inputBST;
+		while (cin >> data) {
+			if (data == -1) break;
+			inputBST.insertNode(data);
+		}
+		inputBST.printBST();
+		cin >> c; // get '\n'
 	}
-	inputBST.printBST();
 	return 0;
 }
